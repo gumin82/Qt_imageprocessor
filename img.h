@@ -20,16 +20,22 @@ public:
     void loadFile (QString filename);
 private slots:
     void showOpenFile();
+    void getZoomOut();
+    void getenlarge();
 
 private:
     QWidget *central;
     QMenu *fileMenu;
+    QMenu *toolMenu;
     QToolBar *fileTool;
     QImage img;
     QString filename;
     QLabel *imgWin;
     QAction *openFileAction;
     QAction *exitAction;
+    QAction *enlargeAction;
+    QAction *zoomoutAction;
+    double scaleFactor = 1.0;
 
 };
 #endif // IMG_H

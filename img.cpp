@@ -12,7 +12,7 @@ IMG::IMG(QWidget *parent)
     QHBoxLayout *mainLayout = new QHBoxLayout (central);
         imgWin = new QLabel();
     QPixmap *initPixmap = new QPixmap(300,200);
-    initPixmap->fill (QColor (255, 255, 255));
+    initPixmap->fill (QColor (255, 255, 200));
     imgWin->resize (300,200);
     imgWin->setScaledContents(true);
     imgWin->setPixmap (*initPixmap);
@@ -27,24 +27,39 @@ IMG::~IMG() {}
 void IMG::createActions ()
 {
     openFileAction = new QAction (QStringLiteral("開啟檔案&O"),this);
-    openFileAction->setShortcut (tr("Ctrl+0"));
+    openFileAction->setShortcut (tr("Ctrl+O"));
     openFileAction->setStatusTip (QStringLiteral("開啟影像檔案"));
     connect (openFileAction, SIGNAL (triggered()), this, SLOT (showOpenFile()));
     exitAction = new QAction (QStringLiteral("結束&Q"),this);
     exitAction->setShortcut (tr("Ctrl+Q"));
     exitAction->setStatusTip (QStringLiteral("退出程式"));
     connect (exitAction, SIGNAL(triggered()), this, SLOT (close()));
+    enlargeAction = new QAction (QStringLiteral("放大&+"),this);
+    enlargeAction->setShortcut (tr("Ctrl++"));
+    enlargeAction->setStatusTip (QStringLiteral("放大影像"));
+    connect (enlargeAction, SIGNAL (triggered()), this, SLOT (getenlarge()));
+    zoomoutAction = new QAction (QStringLiteral("縮小&-"),this);
+    zoomoutAction->setShortcut (tr("Ctrl+-"));
+    zoomoutAction->setStatusTip (QStringLiteral("縮小檔案"));
+    connect (zoomoutAction, SIGNAL(triggered()), this, SLOT (getZoomOut()));
 }
 void IMG::createMenus()
 {
     fileMenu =menuBar ()->addMenu (QStringLiteral("檔案&F"));
     fileMenu->addAction (openFileAction);
     fileMenu->addAction(exitAction);
+    toolMenu =menuBar ()->addMenu (QStringLiteral("工具&T"));
+    toolMenu->addAction (enlargeAction);
+    toolMenu->addAction(zoomoutAction);
 }
 void IMG::createToolBars ()
 {
     fileTool =addToolBar("file");
     fileTool->addAction (openFileAction);
+    fileTool =addToolBar("file");
+    fileTool->addAction (enlargeAction);
+    fileTool =addToolBar("file");
+    fileTool->addAction (zoomoutAction);
 }
 void IMG::loadFile(QString filename)
 {
@@ -75,3 +90,34 @@ void IMG::showOpenFile()
         }
     }
 }
+
+
+void IMG::getenlarge()
+{
+    if (img.isNull()) return;
+    IMG *zoomWin = new IMG();
+    zoomWin->show();
+    QImage zoomImg = img.scaled(
+        img.width() * 2.0,
+        img.height() * 2.0,
+        Qt::KeepAspectRatio,
+        Qt::SmoothTransformation
+        );
+    zoomWin->img = zoomImg;
+    zoomWin->imgWin->setPixmap(QPixmap::fromImage(zoomImg));
+}
+void IMG::getZoomOut()
+{
+    if (img.isNull()) return;
+    IMG *zoomWin = new IMG();
+    zoomWin->show();
+    QImage zoomImg = img.scaled(
+        img.width() * 0.5,
+        img.height() * 0.5,
+        Qt::KeepAspectRatio,
+        Qt::SmoothTransformation
+        );
+    zoomWin->img = zoomImg;
+    zoomWin->imgWin->setPixmap(QPixmap::fromImage(zoomImg));
+}
+
