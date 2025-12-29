@@ -5,25 +5,31 @@
 #include <QDebug>
 
 IMG::IMG(QWidget *parent)
-    : QMainWindow(parent)
+    : MouseEvent(parent)
 {
-    setWindowTitle (QStringLiteral("影像處理"));
-    central =new QWidget();
-    QHBoxLayout *mainLayout = new QHBoxLayout (central);
-        imgWin = new QLabel();
-    QPixmap *initPixmap = new QPixmap(300,200);
-        gWin = new GTransform();
-    initPixmap->fill (QColor (255, 255, 200));
-    imgWin->resize (300,200);
+    setWindowTitle(QStringLiteral("影像處理"));
+    central = new QWidget();
+    QHBoxLayout *mainLayout = new QHBoxLayout(central);
+    imgWin = new QLabel();
+    QPixmap *initPixmap = new QPixmap(300, 200);
+    gWin = new GTransform();
+    initPixmap->fill(QColor(255, 255, 200));
+    imgWin->resize(300, 200);
     imgWin->setScaledContents(true);
-    imgWin->setPixmap (*initPixmap);
-    mainLayout->addWidget (imgWin);
-    setCentralWidget (central);
+    imgWin->setPixmap(*initPixmap);
+    mainLayout->addWidget(imgWin);
+    setCentralWidget(central);
+    setMouseTracking(true);
+    statusLabel = new QLabel;
+    statusLabel->setFixedWidth (100);
+    MousePosLabel = new QLabel;
+    MousePosLabel->setText(tr(" "));
+    statusBar()->addPermanentWidget (MousePosLabel);
+
     createActions();
     createMenus();
     createToolBars();
 }
-
 IMG::~IMG() {}
 void IMG::createActions ()
 {
@@ -139,5 +145,45 @@ void IMG::showGeometryTransform()
         gWin->srcImg = img;
         gWin->inWin->setPixmap(QPixmap:: fromImage (gWin->srcImg));
         gWin->show();
+}
+void IMG::mouseMoveEvent(QMouseEvent *event)
+{
+    QString str = "(" + QString::number (event->x()) + "," +
+                  QString::number (event->y()) +")";
+    MousePosLabel->setText(str);
+}
+void IMG::mousePressEvent(QMouseEvent *event)
+{
+    QString str = "(" + QString::number (event->x()) + "," +
+                  QString::number (event->y()) + ")";
+    if (event->button() == Qt::LeftButton)
+    {
+        statusBar()->showMessage (QStringLiteral("左鍵:") + str);
+    }
+    else if (event->button() == Qt::RightButton)
+    {
+        statusBar()->showMessage (QStringLiteral("右鍵:") + str);
+    }
+    else if (event->button() == Qt::MiddleButton)
+    {
+        statusBar()->showMessage (QStringLiteral("中鍵:") + str);
+    }
+    qDebug() << "按壓";
+}
+
+void IMG::mouseReleaseEvent(QMouseEvent *event)
+{
+    QString str = "(" + QString::number (event->x()) + "," +
+                  QString::number (event->y()) + ")";
+    statusBar()->showMessage (QStringLiteral("釋放:") + str);
+    qDebug() << "釋放";
+}
+
+void IMG::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    QString str = "(" + QString::number (event->x()) + "," +
+                  QString::number (event->y()) + ")";
+    statusBar()->showMessage (QStringLiteral("雙擊:") + str);
+    qDebug() << "雙擊";
 }
 

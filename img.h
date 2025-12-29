@@ -8,7 +8,8 @@
 #include <QImage>
 #include <QLabel>
 #include "gtransform.h"
-class IMG : public QMainWindow
+#include "mouseevent.h"
+class IMG : public  MouseEvent
 {
     Q_OBJECT
 
@@ -24,6 +25,14 @@ private slots:
     void getZoomOut();
     void getenlarge();
     void showGeometryTransform();
+   // void showMouseEvent();
+protected:  // 確保這些事件方法在 IMG 中能夠被覆寫
+    void mouseMoveEvent(QMouseEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseDoubleClickEvent(QMouseEvent *event) override;
+private:
+    QLabel *MousePosLabel;  // 在 IMG 類別中重新定義 MousePosLabel
 
 private:
     GTransform  *gWin;
