@@ -7,8 +7,10 @@
 #include <QToolBar>
 #include <QImage>
 #include <QLabel>
+#include <QPainter>
 #include "gtransform.h"
 #include "mouseevent.h"
+#include "zoomwindow.h"
 class IMG : public  MouseEvent
 {
     Q_OBJECT
@@ -31,6 +33,7 @@ protected:  // 確保這些事件方法在 IMG 中能夠被覆寫
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void paintEvent(QPaintEvent *event) override;
 private:
     QLabel *MousePosLabel;  // 在 IMG 類別中重新定義 MousePosLabel
 
@@ -49,6 +52,12 @@ private:
     QAction *zoomoutAction;
     QAction *geometryAction;
     double scaleFactor = 1.0;
+    
+    // Region selection variables
+    bool selecting;
+    QPoint selectionStart;
+    QPoint selectionEnd;
+    QRect selectionRect;
 
 };
 #endif // IMG_H
