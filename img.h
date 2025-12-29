@@ -7,6 +7,7 @@
 #include <QToolBar>
 #include <QImage>
 #include <QLabel>
+#include "gtransform.h"
 class IMG : public QMainWindow
 {
     Q_OBJECT
@@ -22,8 +23,10 @@ private slots:
     void showOpenFile();
     void getZoomOut();
     void getenlarge();
+    void showGeometryTransform();
 
 private:
+    GTransform  *gWin;
     QWidget *central;
     QMenu *fileMenu;
     QMenu *toolMenu;
@@ -35,6 +38,7 @@ private:
     QAction *exitAction;
     QAction *enlargeAction;
     QAction *zoomoutAction;
+    QAction *geometryAction;
     double scaleFactor = 1.0;
 
 };
