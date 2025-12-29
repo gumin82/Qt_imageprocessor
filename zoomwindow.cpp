@@ -155,8 +155,8 @@ void ZoomWindow::toggleDrawMode()
 void ZoomWindow::mousePressEvent(QMouseEvent *event)
 {
     if (drawMode && event->button() == Qt::LeftButton) {
-        // Map the click position to image coordinates
-        QPoint clickPos = imageLabel->mapFrom(this, event->pos());
+        // Map the click position to image label coordinates
+        QPoint clickPos = imageLabel->mapFromGlobal(event->globalPos());
         if (imageLabel->rect().contains(clickPos)) {
             lastDrawPoint = clickPos;
         }
@@ -166,16 +166,19 @@ void ZoomWindow::mousePressEvent(QMouseEvent *event)
 void ZoomWindow::mouseMoveEvent(QMouseEvent *event)
 {
     if (drawMode && (event->buttons() & Qt::LeftButton)) {
-        QPoint currentPos = imageLabel->mapFrom(this, event->pos());
+        QPoint currentPos = imageLabel->mapFromGlobal(event->globalPos());
         
-        if (imageLabel->rect().contains(currentPos) && !lastDrawPoint.isNull()) {
+        if (imageLabel->rect().contains(currentPos) && !lastDrawPoint.isNull() && !editedImage.isNull()) {
             // Draw on the image
             QPainter painter(&editedImage);
-            painter.setPen(QPen(brushColor, brushSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-            painter.drawLine(lastDrawPoint, currentPos);
-            
-            // Update display
-            imageLabel->setPixmap(QPixmap::fromImage(editedImage));
+            if (painter.isActive()) {
+                painter.setPen(QPen(brushColor, brushSize, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+                painter.drawLine(lastDrawPoint, currentPos);
+                painter.end();
+                
+                // Update display
+                imageLabel->setPixmap(QPixmap::fromImage(editedImage));
+            }
             
             lastDrawPoint = currentPos;
         }

@@ -14,12 +14,12 @@ IMG::IMG(QWidget *parent)
     central = new QWidget();
     QHBoxLayout *mainLayout = new QHBoxLayout(central);
     imgWin = new QLabel();
-    QPixmap *initPixmap = new QPixmap(300, 200);
+    QPixmap initPixmap(300, 200);
     gWin = new GTransform();
-    initPixmap->fill(QColor(255, 255, 200));
+    initPixmap.fill(QColor(255, 255, 200));
     imgWin->resize(300, 200);
     imgWin->setScaledContents(true);
-    imgWin->setPixmap(*initPixmap);
+    imgWin->setPixmap(initPixmap);
     mainLayout->addWidget(imgWin);
     setCentralWidget(central);
     setMouseTracking(true);
@@ -75,13 +75,10 @@ void IMG::createMenus()
 }
 void IMG::createToolBars ()
 {
-    fileTool =addToolBar("file");
+    fileTool = addToolBar("file");
     fileTool->addAction (openFileAction);
-    fileTool =addToolBar("file");
     fileTool->addAction (enlargeAction);
-    fileTool =addToolBar("file");
     fileTool->addAction (zoomoutAction);
-    fileTool =addToolBar("file");
     fileTool->addAction(geometryAction);
 }
 void IMG::loadFile(QString filename)
